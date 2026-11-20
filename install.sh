@@ -6,7 +6,8 @@
 #
 # Idempotent. An existing ~/.zshrc that is not already our link is moved to ~/.zshrc.bak
 # (or .bak.1, .bak.2, ...) before linking. ~/.zshrc.local is created from the example only
-# when absent, with mode 600, and never overwritten.
+# when absent, with mode 600, and never overwritten. gh is logged in (SSH, browser) when it is
+# not already, and git user.name / user.email are asked for when missing, never overwritten.
 set -eu
 
 root="$(cd "$(dirname "$0")" && pwd)"
@@ -14,7 +15,7 @@ dry_run=0
 case "${1:-}" in
   "") ;;
   --dry-run) dry_run=1 ;;
-  -h|--help) sed -n '2,9p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  -h|--help) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
   *) echo "install: unknown option '$1'" >&2; exit 2 ;;
 esac
 
@@ -39,6 +40,29 @@ fi
 
 say "brew bundle --file $root/Brewfile"
 if [ "$dry_run" -eq 0 ]; then brew bundle --file "$root/Brewfile"; fi
+
+if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+  say "ok      gh already authenticated"
+else
+  say "gh auth login --git-protocol ssh --web (interactive: generates and uploads an SSH key)"
+  if [ "$dry_run" -eq 0 ]; then gh auth login --git-protocol ssh --web; fi
+fi
+
+for key in name email; do
+  if [ -n "$(git config --global "user.$key" || true)" ]; then
+    say "ok      git user.$key already set, left alone"
+  else
+    say "ask     git user.$key is missing from the global git config"
+    if [ "$dry_run" -eq 0 ]; then
+      if [ -t 0 ]; then
+        read -r -p "git user.$key: " value
+        if [ -n "$value" ]; then git config --global "user.$key" "$value"; fi
+      else
+        echo "install: no terminal, set it later: git config --global user.$key <value>" >&2
+      fi
+    fi
+  fi
+done
 
 # Preferred stack: latest stable Ruby as the global default (projects pin their own with
 # .ruby-version), then the latest Rails.
@@ -89,4 +113,4 @@ else
   fi
 fi
 
-say "done. Next: fill in ~/.zshrc.local, then run ai-harness/install.sh"
+say "done. Next: fill in ~/.zshrc.local, check with 'gh auth status', then run ai-harness/install.sh"
