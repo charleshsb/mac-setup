@@ -1,0 +1,12 @@
+# Template for ~/.zshrc.local: copy it there, fill it in, keep it out of git.
+# Real values never go in this repository: regenerate or look them up at their source.
+#
+# Typical content:
+#   - API tokens and keys (export NAME="...")
+#   - cloud project ids and credential file paths
+#   - aliases and paths that only make sense at work
+#   - anything that names an employer, a colleague or an internal tool
+
+# export EXAMPLE_API_TOKEN=""
+# export GOOGLE_APPLICATION_CREDENTIALS="$HOME/path/to/credentials.json"
+# alias example="echo work-only alias"
