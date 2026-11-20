@@ -1,45 +1,46 @@
 # mac-setup
 
-Dépôt privé: de quoi remettre un Mac neuf dans l'état de travail, sans secret.
+Everything needed to bring a fresh Mac to a working state, with no secrets in it.
 
 ```
 mac-setup/
-├── zshrc                  configuration zsh générique (oh-my-zsh, rbenv, nvm, postgres, ...)
-├── zshrc.local.example    modèle de ~/.zshrc.local (tokens, alias de travail): jamais de valeurs
-├── Brewfile               outils en ligne de commande et applications (casks)
-└── install.sh             Homebrew, brew bundle, oh-my-zsh, liens (--dry-run disponible)
+├── zshrc                  generic zsh configuration (oh-my-zsh, rbenv, nvm, postgres, ...)
+├── zshrc.local.example    template for ~/.zshrc.local (tokens, work aliases): never any values
+├── Brewfile               command-line tools and applications (casks)
+└── install.sh             Homebrew, brew bundle, oh-my-zsh, links (--dry-run available)
 ```
 
-## Sur un Mac neuf
+## On a fresh Mac
 
-Le dépôt est privé: le cloner exige déjà d'être authentifié sur GitHub. D'où l'ordre:
-Xcode CLT, Homebrew, `gh`, connexion, puis clone.
+If the repository is private, cloning it already requires GitHub authentication, hence the order:
+Xcode CLT, Homebrew, `gh`, login, then clone.
 
 ```bash
-xcode-select --install                        # attendre la fin de l'installation
-# Homebrew: installeur officiel sur https://brew.sh
+xcode-select --install                        # wait for the installer to finish
+# Homebrew: official installer at https://brew.sh
 brew install gh
-gh auth login --git-protocol ssh --web        # génère et téléverse la clé SSH
+gh auth login --git-protocol ssh --web        # generates and uploads the SSH key
 gh repo clone charleshsb/mac-setup ~/Code/mac-setup
 cd ~/Code/mac-setup
 ./install.sh --dry-run
 ./install.sh
-gh auth status                                # vérification
+gh auth status                                # check
 ```
 
-`install.sh` redemande la connexion `gh` si elle manque, et demande `user.name` / `user.email`
-git s'ils sont absents de la config globale (rien n'est écrasé, aucune valeur par défaut ici).
+`install.sh` runs the `gh` login again if it is missing, and asks for git `user.name` /
+`user.email` when they are absent from the global config (nothing is overwritten, no default
+value lives in this repository).
 
-Puis: remplir `~/.zshrc.local` (modèle dans `zshrc.local.example`), et lancer
-`~/Code/ai-harness/install.sh` pour l'environnement Claude Code.
+Then: fill in `~/.zshrc.local` (template in `zshrc.local.example`), and run
+`~/Code/ai-harness/install.sh` to set up the Claude Code environment.
 
-## Règle d'or: les secrets
+## Golden rule: secrets
 
-`zshrc` est versionné, donc **aucune valeur sensible dedans**: ni token, ni clé, ni identifiant de
-projet cloud, ni nom d'employeur ou de collègue. Tout cela va dans `~/.zshrc.local`, ignoré par
-git (`.gitignore`). Ces valeurs se régénèrent ou se retrouvent chez leur service: rien à sauvegarder ici.
+`zshrc` is versioned, so it holds **no sensitive value**: no token, no key, no cloud project id,
+no employer or colleague name. All of that goes in `~/.zshrc.local`, ignored by git
+(`.gitignore`). Those values can be regenerated or looked up at their source: nothing to back up here.
 
-## À faire à la main
+## By hand
 
-Non couverts par le script: `nvm` (et les versions de Node), le SDK
-Google Cloud (`~/google-cloud-sdk`), `bun`.
+Not covered by the script: `nvm` (and the Node versions), the Google Cloud SDK
+(`~/google-cloud-sdk`), `bun`.
