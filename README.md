@@ -12,12 +12,23 @@ mac-setup/
 
 ## Sur un Mac neuf
 
+Le dépôt est privé: le cloner exige déjà d'être authentifié sur GitHub. D'où l'ordre:
+Xcode CLT, Homebrew, `gh`, connexion, puis clone.
+
 ```bash
+xcode-select --install                        # attendre la fin de l'installation
+# Homebrew: installeur officiel sur https://brew.sh
+brew install gh
+gh auth login --git-protocol ssh --web        # génère et téléverse la clé SSH
 gh repo clone charleshsb/mac-setup ~/Code/mac-setup
 cd ~/Code/mac-setup
 ./install.sh --dry-run
 ./install.sh
+gh auth status                                # vérification
 ```
+
+`install.sh` redemande la connexion `gh` si elle manque, et demande `user.name` / `user.email`
+git s'ils sont absents de la config globale (rien n'est écrasé, aucune valeur par défaut ici).
 
 Puis: remplir `~/.zshrc.local` (modèle dans `zshrc.local.example`), et lancer
 `~/Code/ai-harness/install.sh` pour l'environnement Claude Code.
