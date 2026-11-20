@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Set up a fresh Mac: Homebrew, the Brewfile, oh-my-zsh and the shell configuration.
+# Set up a fresh Mac: Homebrew, the Brewfile, nvm and Node, oh-my-zsh and the shell configuration.
 #
 #   ./install.sh            do everything
 #   ./install.sh --dry-run  print what would change, change nothing
@@ -78,6 +78,30 @@ if command -v rbenv >/dev/null 2>&1 || [ "$dry_run" -eq 1 ]; then
   else
     say "ok      a Ruby is already installed under ~/.rbenv/versions, left alone"
   fi
+fi
+
+# Official installer, not Homebrew: nvm upstream does not support its Homebrew formula.
+# PROFILE=/dev/null stops it appending to ~/.zshrc, which is a link to this repository's zshrc.
+nvm_version="v0.40.4"
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
+  say "ok      nvm already installed in ~/.nvm, left alone"
+else
+  say "install nvm $nvm_version (official installer, profile left untouched)"
+  if [ "$dry_run" -eq 0 ]; then
+    PROFILE=/dev/null bash -c \
+      "$(curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/$nvm_version/install.sh")"
+  fi
+fi
+
+if [ -z "$(ls "$HOME/.nvm/versions/node" 2>/dev/null)" ]; then
+  say "nvm: install the latest LTS Node"
+  if [ "$dry_run" -eq 0 ]; then
+    export NVM_DIR="$HOME/.nvm"
+    . "$NVM_DIR/nvm.sh"
+    nvm install --lts
+  fi
+else
+  say "ok      a Node is already installed under ~/.nvm/versions, left alone"
 fi
 
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
