@@ -7,7 +7,7 @@ mac-setup/
 ├── zshrc                  generic zsh configuration (oh-my-zsh, rbenv, nvm, postgres, ...)
 ├── zshrc.local.example    template for ~/.zshrc.local (tokens, work aliases): never any values
 ├── Brewfile               command-line tools and applications (casks)
-└── install.sh             Homebrew, brew bundle, oh-my-zsh, links (--dry-run available)
+└── install.sh             Homebrew, brew bundle, nvm and Node, oh-my-zsh, links (--dry-run available)
 ```
 
 ## On a fresh Mac
@@ -42,5 +42,4 @@ no employer or colleague name. All of that goes in `~/.zshrc.local`, ignored by 
 
 ## By hand
 
-Not covered by the script: `nvm` (and the Node versions), the Google Cloud SDK
-(`~/google-cloud-sdk`), `bun`.
+Not covered by the script: the Google Cloud SDK (`~/google-cloud-sdk`), `bun`.
