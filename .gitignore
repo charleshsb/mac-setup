@@ -1,0 +1,6 @@
+.zshrc.local
+*.local
+*.bak
+*.bak.*
+.DS_Store
+.claude/
